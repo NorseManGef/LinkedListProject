@@ -98,6 +98,7 @@ class List {
 
   /// @brief removes the first item in the list, and returns it
   /// @return T
+  /// @throws std::out_of_range if the list is empty
   T pop_front();
 
   /// @brief adds a new item to the end of the list
@@ -105,6 +106,7 @@ class List {
 
   /// @brief removes the last item in the list, and returns it
   /// @return T
+  /// @throws std::out_of_range if the list is empty
   T pop_back();
 
   /// @brief attempts to remove the first instance of the parameter
@@ -154,14 +156,34 @@ class List {
   /// @param a function that takes the items in the list
   void foreach(std::function<void(T&)> action);
 
+  /// @brief creates a new list from the initial list using a mapping funciton
+  /// @tparam U the type of the new list
+  /// @param mapper a mapping function taking type T (the initial list type) and returning type U
+  /// @return the new list
   template<typename U>
   List<U> map(std::function<U(T&)> mapper);
 
+  /// @brief aggregates the list into a single output
+  /// @param accumulator the function to run on each element, taking the result and the current element
+  /// @return the results of the aggregation
+  /// @throws std::out_of_range if the list is empty
   T aggregate(std::function<T(T&, T&)> accumulator);
 
+  /// @brief aggregates the list into a single output
+  /// @tparam U the type of the output
+  /// @param start the starting value of the aggregation
+  /// @param accumulator the function to run on each element, taking the result and the current element
+  /// @return the results of the aggregation
+  /// @throws std::out_of_range if the list is empty
   template<typename U>
   U aggregate(U start, std::function<U(U&, T&)> accumulator);
 
+  /// @brief aggregates the list into a single output
+  /// @tparam U the type of the output
+  /// @param first A function to run on the first element to initialize the aggregation
+  /// @param accumulator the function to run on each element, taking the result and the current element
+  /// @return the results of the aggregation
+  /// @throws std::out_of_range if the list is empty
   template<typename U>
   U aggregate(std::function<U(T&)> first, std::function<U(U&, T&)> accumulator);
 
