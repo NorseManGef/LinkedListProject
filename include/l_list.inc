@@ -15,6 +15,9 @@
 #define LT List<T>
 #define LU List<U>
 
+#define IT ListIterator<T>
+#define CIT ConstListIterator<T>
+
 #define CHECK_NOT_EMPTY() if(_size==0) throw std::out_of_range("list is empty")
 
 /*
@@ -399,6 +402,42 @@ TT std::istream& operator>>(std::istream& in, LT& theList){
   std::stringstream str(theString);
   theList.push_back(std::istream_iterator<T>(str), std::istream_iterator<T>());
   return in;
+}
+
+/*
+ * Iterators!
+ * */
+
+TT IT LT::begin(){
+  //TODO
+}
+
+TT IT LT::end(){
+  //TODO
+}
+
+TT CIT LT::cbegin() const{
+  //TODO
+}
+
+TT CIT LT::cend() const{
+  //TODO
+}
+
+TT IT LT::rbegin(){
+  //TODO
+}
+
+TT IT LT::rend(){
+  //TODO
+}
+
+TT CIT LT::crbegin() const{
+  //TODO
+}
+
+TT CIT LT::crend() const{
+  //TODO
 }
 
 /*

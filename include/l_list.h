@@ -231,10 +231,6 @@ private:
   
   void remove_node(Node<T>& node);
 
-  void copy_list(const List<T>& other);
-
-  void move_list(List<T>&& other);
-
   void copy_from(const List<T>& other);
 
   void move_from(List<T>&& other);
