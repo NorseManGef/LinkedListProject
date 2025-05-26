@@ -235,6 +235,10 @@ private:
 
   void move_list(List<T>&& other);
 
+  void copy_from(const List<T>& other);
+
+  void move_from(List<T>&& other);
+
 };
 
 #include "l_list.inc"

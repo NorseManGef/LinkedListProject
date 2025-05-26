@@ -1,4 +1,6 @@
 #include <functional>
+#include <iterator>
+#include <sstream>
 #include<stdexcept>
 
 #pragma once
@@ -181,14 +183,12 @@ TT bool LT::remove_all(std::function<bool(T&)> query){
 }
 
 TT void LT::clear(){
-  if(_head!=nullptr){
-    Node<T>* node = _head;
-    for(size_t i = 0; i<_size-1; ++i){
-      node = node->next;
-      delete node->previous;
-    }
-    delete node;
+  Node<T>* node = _head;
+  for(size_t i = 0; i<_size-1; ++i){
+    node = node->next;
+    delete node->previous;
   }
+  delete node;
   _size = 0;
 }
 
@@ -300,35 +300,105 @@ TTU U LT::aggregate(std::function<U(T&)> first, std::function<U(U&, T&)> accumul
  * */
 
 TT LT& LT::operator=(const LT& other){
-  //TODO
+  if(this!=other){
+    if(_head!=nullptr){
+      clear();
+    }
+    copy_from(other);
+  }
+  return *this;
 }
 
 TT LT& LT::operator=(LT&& other){
-  //TODO
+  if(this!=other){
+    if(_head!=nullptr){
+      clear();
+    }
+    move_from(other);
+  }
+  return *this;
 }
 
 TT LT LT::operator+(const LT& other) const{
-  //TODO
+  LT newList = new List();
+  Node<T>* node = _head;
+  for(size_t i = 0; i<_size; ++i){
+    newList.push_back(node->data);
+    node = node->next;
+  }
+  node = other->_head;
+  for(size_t i = 0; i<other->_size; ++i){
+    newList.push_back(node->data);
+    node = node->next;
+  }
+  return newList;
 }
 
 TT LT& LT::operator+=(const LT& other){
-  //TODO
+  Node<T>* node = other->_head;
+  for(size_t i = 0; i<other._size; ++i){
+    push_back(node->data);
+    node = node->next;
+  }
+  return *this;
 }
 
 TT bool LT::operator==(const LT& other) const{
-  //TODO
+  if(_size==other->_size && other->_head !=nullptr && _head!=nullptr){
+    Node<T>* nodeOther = other->_head;
+    Node<T>* nodeSelf = _head;
+    for(size_t i = 0; i<_size; ++i){
+      if(nodeSelf->data != nodeOther->data){
+        return false;
+      }
+      nodeSelf = nodeSelf->next;
+      nodeOther = nodeOther->next;
+    }
+    return true;
+  }
+  if(other->head==nullptr && _head==nullptr){
+    true;
+  }
+  return false;
 }
 
 TT bool LT::operator!=(const LT& other) const{
-  //TODO
+  if(_size==other->_size && other->_head !=nullptr && _head!=nullptr){
+    Node<T>* nodeOther = other->_head;
+    Node<T>* nodeSelf = _head;
+    for(size_t i = 0; i<_size; ++i){
+      if(nodeSelf->data != nodeOther->data){
+        return true;
+      }
+      nodeSelf = nodeSelf->next;
+      nodeOther = nodeOther->next;
+    }
+    return false;
+  }
+  if(other->_head==nullptr && _head==nullptr){
+    return false;
+  }
+  return true;
 }
 
 TT std::ostream& operator<<(std::ostream& out, const LT& theList){
-  //TODO
+  Node<T>* node = theList->_head;
+  for(size_t i = 0; i<theList->_size-1; ++i){
+    out << node->data;
+    out << " ";
+    node = node->next;
+  }
+  out << node->data;
+  return out;
 }
 
 TT std::istream& operator>>(std::istream& in, LT& theList){
-  //TODO
+  std::string theString;
+  std::getline(in, theString);
+
+  std::stringstream str(theString);
+  theList.push_back(std::istream_iterator<T>(str), std::istream_iterator<T>());
+  return in;
 }
 
 /*
@@ -339,10 +409,17 @@ TT void LT::remove_node(Node<T>& node){
   //TODO
 }
 
-TT void LT::copy_list(const LT& other){
-  //TODO
+TT void LT::copy_from(const List<T>& other){
+  Node<T>* nodeOther = other->_head;
+  _size = other->_size;
+  for(size_t i = 0; i<_size; ++i){
+    push_back(nodeOther->data);
+    nodeOther = nodeOther->next;
+  }
 }
 
-TT void LT::move_list(LT&& other){
-  //TODO
+TT void LT::move_from(List<T>&& other){
+  _head = other->_head;
+  other->_head = nullptr;
+  _size = other->_size;
 }
