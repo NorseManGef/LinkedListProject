@@ -1,3 +1,5 @@
 .vscode
 .clangd
+.envrc
+.direnv
 bin/
