@@ -210,22 +210,21 @@ class List {
   /*
    * Iterators!
    * */
+  ListIterator<T, int> begin();
+ 
+  ListIterator<T, int> end();
 
-  ListIterator<T> begin();
+  ConstListIterator<T, int> cbegin() const;
 
-  ListIterator<T> end();
+  ConstListIterator<T, int> cend() const;
 
-  ConstListIterator<T> cbegin() const;
+  ListIterator<T, int> rbegin();
 
-  ConstListIterator<T> cend() const;
+  ListIterator<T, int> rend();
 
-  ListIterator<T> rbegin();
+  ConstListIterator<T, int> crbegin() const;
 
-  ListIterator<T> rend();
-
-  ConstListIterator<T> crbegin() const;
-
-  ConstListIterator<T> crend() const;
+  ConstListIterator<T, int> crend() const;
 
 private:
   

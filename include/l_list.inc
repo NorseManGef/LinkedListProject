@@ -15,8 +15,8 @@
 #define LT List<T>
 #define LU List<U>
 
-#define IT ListIterator<T>
-#define CIT ConstListIterator<T>
+#define IT ListIterator<T, int>
+#define CIT ConstListIterator<T, int>
 
 #define CHECK_NOT_EMPTY() if(_size==0) throw std::out_of_range("list is empty")
 
@@ -38,8 +38,14 @@ TT LT::List(List&& other){
   move_list(other);
 }
 
-TT template<class ForwardIterator> LT::List(ForwardIterator begin, ForwardIterator end){
-  //TODO
+TT template<class ForwardIterator> LT::List(ForwardIterator begin, ForwardIterator end):
+  _head(nullptr),
+  _tail(nullptr),
+  _size(0)
+{
+  for(ForwardIterator current = begin; current!=end; ++current){
+    push_back(*current);
+  }
 }
 
 TT LT::~List(){
@@ -130,38 +136,33 @@ TT T LT::pop_back(){
 
 TT bool LT::remove(const T& item){
   if(_head==nullptr){ return false; }
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(node->data==item){
-      delete node;
+      remove_node(node);
       return true; 
     }
-    node = node->next;
   }
   return false;
 }
 
 TT bool LT::remove(std::function<bool(T&)> query){
   if(_head==nullptr){ return false; }
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(query(node->data)){
-      delete node;
+      remove_node(node);
       return true;
     }
-    node = node->next;
   }
   return false;
 }
 
 TT bool LT::remove_all(const T& item){
   if(_head==nullptr){ return false; }
-  Node<T>* node = _head;
   bool track = false;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(node->data==item){
       node = node->next;
-      delete node->previous;
+      remove_node(node->previous);
       track = true;
       continue;
     }
@@ -172,12 +173,11 @@ TT bool LT::remove_all(const T& item){
 
 TT bool LT::remove_all(std::function<bool(T&)> query){
   if(_head==nullptr){ return false; }
-  Node<T>* node = _head;
   bool track = false;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(query(node->data)){
       node = node->next;
-      delete node->previous;
+      remove_node(node->previous);
       track = true;
       continue;
     }
@@ -187,7 +187,7 @@ TT bool LT::remove_all(std::function<bool(T&)> query){
 
 TT void LT::clear(){
   Node<T>* node = _head;
-  for(size_t i = 0; i<_size-1; ++i){
+  for(; node->next!=nullptr; node = node->next){
     node = node->next;
     delete node->previous;
   }
@@ -197,8 +197,7 @@ TT void LT::clear(){
 
 TT bool LT::contains(const T& item){
   if(_head==nullptr){ return false; }
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(node->data==item){
       return true;
     }
@@ -209,8 +208,7 @@ TT bool LT::contains(const T& item){
 
 TT bool LT::contains(std::function<bool(T&)> query){
   if(_head==nullptr){ return false; }
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(query(node->data)){
       return true;
     }
@@ -222,12 +220,10 @@ TT bool LT::contains(std::function<bool(T&)> query){
 TT int LT::count(const T& item){
   if(_head==nullptr){ return false; }
   int count = 0;
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(node->data==item){
       ++count;
     }
-    node = node->next;
   }
   return count;
 }
@@ -235,30 +231,24 @@ TT int LT::count(const T& item){
 TT int LT::count(std::function<bool(T&)> query){
   if(_head==nullptr){ return false; }
   int count = 0;
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(query(node->data)){
       ++count;
     }
-    node = node->next;
   }
   return count;
 }
 
 TT void LT::foreach(std::function<void(T&)> action){
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     action(node->data);
-    node = node->next;
   }
 }
 
 TTU LU LT::map(std::function<U(T&)> mapper){
-  LU newList;
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  LU newList; 
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     newList.push_back(mapper(node->data));
-    node = node->next;
   }
   return newList;
 }
@@ -268,20 +258,17 @@ TT T LT::aggregate(std::function<T(T&, T&)> accumulator){
   Node<T>* node = _head;
   T result = node->data;
   node = node->next;
-  for(size_t i = 0; i<_size; ++i){
+  for(; node!=nullptr; node = node->next){
     result = accumulator(result, node->data);
-    node = node->next;
   }
   return result;
 }
 
 TTU U LT::aggregate(U start, std::function<U(U&, T&)> accumulator){
   CHECK_NOT_EMPTY();
-  Node<T>* node = _head;
   U result = start;
-  for(size_t i; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     result = accumulator(result, node->data);
-    node = node->next;
   }
   return result;
 }
@@ -291,9 +278,8 @@ TTU U LT::aggregate(std::function<U(T&)> first, std::function<U(U&, T&)> accumul
   Node<T>* node = _head;
   U result = first(node->data);
   node = node->next;
-  for(size_t i; i<_size; ++i){
+  for(; node!=nullptr; node = node->next){
     result = accumulator(result, node->data);
-    node = node->next;
   }
   return result;
 }
@@ -324,24 +310,18 @@ TT LT& LT::operator=(LT&& other){
 
 TT LT LT::operator+(const LT& other) const{
   LT newList = new List();
-  Node<T>* node = _head;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* node = _head; node!=nullptr; node = node->next){
     newList.push_back(node->data);
-    node = node->next;
   }
-  node = other->_head;
-  for(size_t i = 0; i<other->_size; ++i){
+  for(Node<T>* node = other->_head; node!=nullptr; node = node->next){
     newList.push_back(node->data);
-    node = node->next;
   }
   return newList;
 }
 
-TT LT& LT::operator+=(const LT& other){
-  Node<T>* node = other->_head;
-  for(size_t i = 0; i<other._size; ++i){
+TT LT& LT::operator+=(const LT& other){ 
+  for(Node<T>* node = other->_head; node!=nullptr; node = node->next){
     push_back(node->data);
-    node = node->next;
   }
   return *this;
 }
@@ -349,12 +329,10 @@ TT LT& LT::operator+=(const LT& other){
 TT bool LT::operator==(const LT& other) const{
   if(_size==other->_size && other->_head !=nullptr && _head!=nullptr){
     Node<T>* nodeOther = other->_head;
-    Node<T>* nodeSelf = _head;
-    for(size_t i = 0; i<_size; ++i){
+    for(Node<T>* nodeSelf = _head; nodeSelf!=nullptr; nodeSelf = nodeSelf->next){
       if(nodeSelf->data != nodeOther->data){
         return false;
       }
-      nodeSelf = nodeSelf->next;
       nodeOther = nodeOther->next;
     }
     return true;
@@ -368,12 +346,10 @@ TT bool LT::operator==(const LT& other) const{
 TT bool LT::operator!=(const LT& other) const{
   if(_size==other->_size && other->_head !=nullptr && _head!=nullptr){
     Node<T>* nodeOther = other->_head;
-    Node<T>* nodeSelf = _head;
-    for(size_t i = 0; i<_size; ++i){
+    for(Node<T>* nodeSelf = _head; nodeSelf!=nullptr; nodeSelf = nodeSelf->next){
       if(nodeSelf->data != nodeOther->data){
         return true;
       }
-      nodeSelf = nodeSelf->next;
       nodeOther = nodeOther->next;
     }
     return false;
@@ -386,10 +362,9 @@ TT bool LT::operator!=(const LT& other) const{
 
 TT std::ostream& operator<<(std::ostream& out, const LT& theList){
   Node<T>* node = theList->_head;
-  for(size_t i = 0; i<theList->_size-1; ++i){
+  for(; node->next!=nullptr; node=node->next){
     out << node->data;
     out << " ";
-    node = node->next;
   }
   out << node->data;
   return out;
@@ -409,35 +384,35 @@ TT std::istream& operator>>(std::istream& in, LT& theList){
  * */
 
 TT IT LT::begin(){
-  //TODO
+  return ListIterator(_head, false);
 }
 
 TT IT LT::end(){
-  //TODO
+  return ListIterator(_tail, false);
 }
 
 TT CIT LT::cbegin() const{
-  //TODO
+  return ConstListIterator(_head, false);
 }
 
 TT CIT LT::cend() const{
-  //TODO
+  return ConstListIterator(_tail, false);
 }
 
 TT IT LT::rbegin(){
-  //TODO
+  return ListIterator(_head, true);
 }
 
 TT IT LT::rend(){
-  //TODO
+  return ListIterator(_tail, true);
 }
 
 TT CIT LT::crbegin() const{
-  //TODO
+  return ConstListIterator(_head, true);
 }
 
 TT CIT LT::crend() const{
-  //TODO
+  return ConstListIterator(_tail, true);
 }
 
 /*
@@ -445,20 +420,23 @@ TT CIT LT::crend() const{
  * */
 
 TT void LT::remove_node(Node<T>& node){
-  //TODO
+  if(node->previous != nullptr) node->previous->next = node->next;
+  else _head = node->next;
+  if(node->next != nullptr) node->next->previous = node->previous;
+  else _tail = node->previous;
+  --_size;
 }
 
 TT void LT::copy_from(const List<T>& other){
-  Node<T>* nodeOther = other->_head;
   _size = other->_size;
-  for(size_t i = 0; i<_size; ++i){
+  for(Node<T>* nodeOther = other->_head; nodeOther!=nullptr; nodeOther = nodeOther->next){
     push_back(nodeOther->data);
-    nodeOther = nodeOther->next;
   }
 }
 
 TT void LT::move_from(List<T>&& other){
   _head = other->_head;
+  _tail = other->_tail;
   other->_head = nullptr;
   _size = other->_size;
 }
