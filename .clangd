@@ -1,0 +1,7 @@
+If:
+  PathMatch: .*\.inc
+
+CompileFlags:
+  Add: 
+    - -xc++-header
+    - -DCLANGD_ONLY
