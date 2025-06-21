@@ -69,11 +69,11 @@ TTSRP typename ITB::self& ITB::operator = (const self& other){
   return *this;
 }
 
-TTSRP bool ITB::operator == (const self& other){
+TTSRP bool ITB::operator == (const self& other) const{
   return node == other.node && isReverse == other.isReverse;
 }
 
-TTSRP bool ITB::operator != (const self& other){
+TTSRP bool ITB::operator != (const self& other) const{
   return node != other.node || isReverse != other.isReverse;
 }
 

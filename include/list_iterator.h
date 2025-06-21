@@ -36,8 +36,8 @@ public:
 
   self& operator = (const self& other);
 
-  bool operator == (const self& other);
-  bool operator != (const self& other); 
+  bool operator == (const self& other) const;
+  bool operator != (const self& other) const; 
 
 protected:
   ListIteratorBase(Node<T>* node, bool isReverse);

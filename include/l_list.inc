@@ -31,11 +31,11 @@ TT LT::List():
 {}
 
 TT LT::List(const List& other){
-  copy_list(other);
+  copy_from(other);
 }
 
 TT LT::List(List&& other){
-  move_list(other);
+  move_from(other);
 }
 
 TT template<class ForwardIterator> LT::List(ForwardIterator begin, ForwardIterator end):
@@ -105,9 +105,9 @@ TT void LT::push_front(const T& item){
 
 TT T LT::pop_front(){
   CHECK_NOT_EMPTY();
-  Node temp = _head;
+  Node<T>* temp = _head;
   _head = _head->next;
-  delete _head->previous;
+  _head->previous;
   --_size;
   return temp->data;
 }
@@ -127,9 +127,9 @@ TT void LT::push_back(const T& item){
 
 TT T LT::pop_back(){
   CHECK_NOT_EMPTY();
-  Node temp = _tail;
+  Node<T>* temp = _tail;
   _tail = _tail->previous;
-  delete _tail->next;
+  _tail->next = nullptr;
   --_size;
   return temp->data;
 }
@@ -138,7 +138,7 @@ TT bool LT::remove(const T& item){
   if(_head==nullptr){ return false; }
   for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(node->data==item){
-      remove_node(node);
+      remove_node(*node);
       return true; 
     }
   }
@@ -162,7 +162,7 @@ TT bool LT::remove_all(const T& item){
   for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(node->data==item){
       node = node->next;
-      remove_node(node->previous);
+      remove_node(*(node->previous));
       track = true;
       continue;
     }
@@ -186,12 +186,11 @@ TT bool LT::remove_all(std::function<bool(T&)> query){
 }
 
 TT void LT::clear(){
-  Node<T>* node = _head;
-  for(; node->next!=nullptr; node = node->next){
-    node = node->next;
-    delete node->previous;
+  while(_head!=nullptr){
+    Node<T>* node = _head;
+    _head = _head->next;
+    delete node;
   }
-  delete node;
   _size = 0;
 }
 
@@ -201,7 +200,6 @@ TT bool LT::contains(const T& item){
     if(node->data==item){
       return true;
     }
-    node = node->next;
   }
   return false;
 }
@@ -212,7 +210,6 @@ TT bool LT::contains(std::function<bool(T&)> query){
     if(query(node->data)){
       return true;
     }
-    node = node->next;
   }
   return false;
 }
@@ -299,53 +296,49 @@ TT LT& LT::operator=(const LT& other){
 }
 
 TT LT& LT::operator=(LT&& other){
-  if(this!=other){
-    if(_head!=nullptr){
-      clear();
-    }
+  if(*this!=other){
+    clear();
     move_from(other);
   }
   return *this;
 }
 
 TT LT LT::operator+(const LT& other) const{
-  LT newList = new List();
+  LT newList;
   for(Node<T>* node = _head; node!=nullptr; node = node->next){
     newList.push_back(node->data);
   }
-  for(Node<T>* node = other->_head; node!=nullptr; node = node->next){
+  for(Node<T>* node = other._head; node!=nullptr; node = node->next){
     newList.push_back(node->data);
   }
   return newList;
 }
 
 TT LT& LT::operator+=(const LT& other){ 
-  for(Node<T>* node = other->_head; node!=nullptr; node = node->next){
+  for(Node<T>* node = other._head; node!=nullptr; node = node->next){
     push_back(node->data);
   }
   return *this;
 }
 
 TT bool LT::operator==(const LT& other) const{
-  if(_size==other->_size && other->_head !=nullptr && _head!=nullptr){
-    Node<T>* nodeOther = other->_head;
-    for(Node<T>* nodeSelf = _head; nodeSelf!=nullptr; nodeSelf = nodeSelf->next){
-      if(nodeSelf->data != nodeOther->data){
-        return false;
-      }
-      nodeOther = nodeOther->next;
+  if(_size!=other._size){ return false; }
+  Node<T>* nodeSelf = _head;
+  Node<T>* nodeOther = other._head;
+  while(nodeSelf!=nullptr && nodeOther!=nullptr){
+    if(nodeSelf->data != nodeOther->data){
+      return false;
     }
-    return true;
+    
+    nodeSelf = nodeSelf->next;
+    nodeOther = nodeOther->next;
   }
-  if(other->head==nullptr && _head==nullptr){
-    true;
-  }
-  return false;
+  return true;
 }
 
 TT bool LT::operator!=(const LT& other) const{
-  if(_size==other->_size && other->_head !=nullptr && _head!=nullptr){
-    Node<T>* nodeOther = other->_head;
+  if(_size==other._size && other._head !=nullptr && _head!=nullptr){
+    Node<T>* nodeOther = other._head;
     for(Node<T>* nodeSelf = _head; nodeSelf!=nullptr; nodeSelf = nodeSelf->next){
       if(nodeSelf->data != nodeOther->data){
         return true;
@@ -354,14 +347,14 @@ TT bool LT::operator!=(const LT& other) const{
     }
     return false;
   }
-  if(other->_head==nullptr && _head==nullptr){
+  if(other._head==nullptr && _head==nullptr){
     return false;
   }
   return true;
 }
 
 TT std::ostream& operator<<(std::ostream& out, const LT& theList){
-  Node<T>* node = theList->_head;
+  Node<T>* node = theList._head;
   for(; node->next!=nullptr; node=node->next){
     out << node->data;
     out << " ";
@@ -384,35 +377,35 @@ TT std::istream& operator>>(std::istream& in, LT& theList){
  * */
 
 TT IT LT::begin(){
-  return ListIterator(_head, false);
+  return IT(_head, false);
 }
 
 TT IT LT::end(){
-  return ListIterator(_tail, false);
+  return IT(_tail, false);
 }
 
 TT CIT LT::cbegin() const{
-  return ConstListIterator(_head, false);
+  return CIT(_head, false);
 }
 
 TT CIT LT::cend() const{
-  return ConstListIterator(_tail, false);
+  return CIT(_tail, false);
 }
 
 TT IT LT::rbegin(){
-  return ListIterator(_head, true);
+  return IT(_head, true);
 }
 
 TT IT LT::rend(){
-  return ListIterator(_tail, true);
+  return IT(_tail, true);
 }
 
 TT CIT LT::crbegin() const{
-  return ConstListIterator(_head, true);
+  return CIT(_head, true);
 }
 
 TT CIT LT::crend() const{
-  return ConstListIterator(_tail, true);
+  return CIT(_tail, true);
 }
 
 /*
@@ -420,23 +413,25 @@ TT CIT LT::crend() const{
  * */
 
 TT void LT::remove_node(Node<T>& node){
-  if(node->previous != nullptr) node->previous->next = node->next;
-  else _head = node->next;
-  if(node->next != nullptr) node->next->previous = node->previous;
-  else _tail = node->previous;
+  if(node.previous != nullptr) node.previous->next = node.next;
+  else _head = node.next;
+  if(node.next != nullptr) node.next->previous = node.previous;
+  else _tail = node.previous;
   --_size;
 }
 
 TT void LT::copy_from(const List<T>& other){
-  _size = other->_size;
-  for(Node<T>* nodeOther = other->_head; nodeOther!=nullptr; nodeOther = nodeOther->next){
+  _size = other._size;
+  for(Node<T>* nodeOther = other._head; nodeOther!=nullptr; nodeOther = nodeOther->next){
     push_back(nodeOther->data);
   }
 }
 
-TT void LT::move_from(List<T>&& other){
-  _head = other->_head;
-  _tail = other->_tail;
-  other->_head = nullptr;
-  _size = other->_size;
+TT void LT::move_from(List<T>& other){
+  _head = other._head;
+  _tail = other._tail;
+  other._head = nullptr;
+  other._tail = nullptr;
+  _size = other._size;
+  other._size = 0;
 }

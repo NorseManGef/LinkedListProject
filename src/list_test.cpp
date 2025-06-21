@@ -126,7 +126,9 @@ TEST_SUITE("constructors"){
 
     CHECK_EQ(list.end(), it);
   }
+}
 
+TEST_SUITE("methods"){
     //////////////////////
    /// Methods //////////
   //////////////////////
@@ -191,7 +193,7 @@ TEST_SUITE("constructors"){
   }
 
   TEST_CASE("test push_front"){
-gilist list;
+    gilist list;
 
     list.push_front(1);
 
@@ -207,8 +209,11 @@ gilist list;
 
     list.push_front(3);
 
+    auto it = list.begin();
+    ++it;
+    
     CHECK_EQ(3, list.front());
-    CHECK_EQ(true, list.contains(2));
+    CHECK_EQ(2, *it);
     CHECK_EQ(1, list.back());
     CHECK_EQ(3, list.size());
   }
@@ -247,8 +252,11 @@ gilist list;
 
     list.push_back(3);
 
+    auto it = list.end();
+    --it;
+
     CHECK_EQ(1, list.front());
-    CHECK_EQ(true, list.contains(2));
+    CHECK_EQ(2, *it);
     CHECK_EQ(3, list.back());
     CHECK_EQ(3, list.size());
   }
@@ -322,8 +330,8 @@ gilist list;
     gilist list(data, data+5);
 
     CHECK_EQ(5, gint::count());
-
-list.clear();
+    
+    list.clear();
 
     CHECK_EQ(0, list.size());
     CHECK_EQ(true, list.empty());
@@ -347,9 +355,9 @@ list.clear();
     int data[] = { 2, 3, 3, 7, 11 };
     gilist list(data, data+5);
 
-    CHECK_EQ(0, list.contains(5));
-    CHECK_EQ(1, list.contains(2));
-    CHECK_EQ(2, list.contains(3));
+    CHECK_EQ(0, list.count(5));
+    CHECK_EQ(1, list.count(2));
+    CHECK_EQ(2, list.count(3));
   }
 
   TEST_CASE("test count query"){
@@ -380,27 +388,96 @@ list.clear();
    // Operators /////
   //////////////////
   TEST_CASE("copy operator"){
-    //TODO
+    gint::init();
+
+    int data[] = { 2, 3, 3, 7, 11 };
+    gilist list(data, data+5);
+    
+    gilist secondList = list;
+
+    CHECK_EQ(10, gint::count());
+    CHECK_EQ(list, secondList);
   }
 
   TEST_CASE("move operator"){
-    //TODO
+    gint::init();
+
+    int data[] = { 2, 3, 3, 7, 11 };
+    gilist list(data, data+5);
+    
+    gilist secondList = std::move(list);
+
+    CHECK_EQ(5, gint::count());
+    gilist testList(data, data+5);
+    CHECK_EQ(secondList, testList);
   }
 
   TEST_CASE("operator+"){
-    //TODO
+    gint::init();
+
+    int data[] = { 2, 3, 3, 7, 11 };
+    gilist list(data, data+5);
+    gilist otherList(data, data+5);
+
+    gilist newList = list+otherList;
+
+    CHECK_EQ(15, gint::count());
+    CHECK_EQ(2, newList.count(2));
+    CHECK_EQ(4, newList.count(3));
+    CHECK_EQ(2, newList.count(7));
+    CHECK_EQ(2, newList.count(11));
   }
 
   TEST_CASE("operator+="){
-    //TODO
+    gint::init();
+
+    int data[] = { 2, 3, 3, 7, 11 };
+    gilist list(data, data+5);
+    gilist newList(data, data+5);
+
+    newList+=list;
+
+    CHECK_EQ(15, gint::count());
+    CHECK_EQ(2, newList.count(2));
+    CHECK_EQ(4, newList.count(3));
+    CHECK_EQ(2, newList.count(7));
+    CHECK_EQ(2, newList.count(11));
   }
 
   TEST_CASE("operator=="){
-    //TODO
+    gint::init();
+
+    int data[] = { 2, 3, 3, 7, 11 };
+    gilist list(data, data+5);
+    gilist otherList(data, data+5);
+
+    CHECK(list==otherList);
+    otherList.pop_back();
+    CHECK_FALSE(list==otherList);
+    otherList.push_back(21);
+    CHECK_FALSE(list==otherList);
+    otherList.clear();
+    CHECK_FALSE(list==otherList);
+    list.clear();
+    CHECK(list==otherList);
   }
 
   TEST_CASE("operator!="){
-    //TODO
+    gint::init();
+
+    int data[] = { 2, 3, 3, 7, 11 };
+    gilist list(data, data+5);
+    gilist otherList(data, data+5);
+
+    CHECK_EQ(false, list!=otherList);
+    otherList.pop_back();
+    CHECK_EQ(true, list!=otherList);
+    otherList.push_back(21);
+    CHECK_EQ(true, list!=otherList);
+    otherList.clear();
+    CHECK_EQ(true, list!=otherList);
+    list.clear();
+    CHECK_EQ(false, list!=otherList);
   }
 
   TEST_CASE("operator<<"){

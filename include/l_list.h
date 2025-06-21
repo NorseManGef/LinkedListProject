@@ -232,7 +232,7 @@ private:
 
   void copy_from(const List<T>& other);
 
-  void move_from(List<T>&& other);
+  void move_from(List<T>& other);
 
 };
 
