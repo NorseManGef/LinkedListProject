@@ -64,6 +64,41 @@ TEST_SUITE("constructors"){
 
     CHECK_EQ(0, gint::count());
   }
+
+  TEST_CASE("test copy constructor with empty list"){
+    gint::init();
+
+    gilist list;
+    gilist otherList(list);
+
+    CHECK_EQ(list.size(), otherList.size());
+    CHECK_EQ(0, gint::count());
+  }
+
+  TEST_CASE("test copy constructor with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+    gilist otherList(list);
+
+    CHECK_EQ(2, gint::count());
+    CHECK_EQ(list.size(), otherList.size());
+    CHECK_EQ(list, otherList);
+  }
+
+  TEST_CASE("test copy constructor with multi item-ed list"){
+    gint::init();
+    
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+    gilist otherList(list);
+
+    CHECK_EQ(4,gint::count());
+    CHECK_EQ(list.size(), otherList.size());
+    CHECK_EQ(list, otherList);
+  }
 }
 
 TEST_SUITE("Operators!"){

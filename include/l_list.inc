@@ -421,10 +421,10 @@ TT void LT::remove_node(Node<T>& node){
 }
 
 TT void LT::copy_from(const List<T>& other){
-  _size = other._size;
   for(Node<T>* nodeOther = other._head; nodeOther!=nullptr; nodeOther = nodeOther->next){
     push_back(nodeOther->data);
   }
+  _size = other._size;
 }
 
 TT void LT::move_from(List<T>& other){
