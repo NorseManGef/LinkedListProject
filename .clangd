@@ -1,6 +1,9 @@
 If:
   PathMatch: .*\.inc
 
+Index:
+  Background: true
+
 CompileFlags:
   Add: 
     - -xc++-header
@@ -10,3 +13,8 @@ CompileFlags:
   
   Compiler:
     - g++
+
+Diagnostics:
+  UnusedIncludes: Strict
+  ClangTidy:
+    Add: [bugprone-use-after-move, misc-*, clang-analyzer-core*]
