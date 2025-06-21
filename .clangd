@@ -5,3 +5,8 @@ CompileFlags:
   Add: 
     - -xc++-header
     - -DCLANGD_ONLY
+    - -Wall
+    - -Wextra
+  
+  Compiler:
+    - g++
