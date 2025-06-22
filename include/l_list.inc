@@ -107,7 +107,7 @@ TT T LT::pop_front(){
   CHECK_NOT_EMPTY();
   Node<T>* temp = _head;
   _head = _head->next;
-  _head->previous;
+  delete _head->previous;
   --_size;
   return temp->data;
 }
