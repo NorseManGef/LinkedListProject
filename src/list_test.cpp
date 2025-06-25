@@ -347,6 +347,127 @@ TEST_SUITE("Operators!"){
     ++it;
     CHECK_EQ(4, *it);
   }
+
+  TEST_CASE("test equality operator with empty list"){
+    gilist list;
+    gilist newList;
+
+    CHECK(list==newList);
+  }
+
+  TEST_CASE("test false equality operator with singly item-ed list"){
+    gilist list;
+    list.push_back(1);
+    gilist newList;
+    newList.push_back(2);
+
+    CHECK_FALSE(list==newList);
+  }
+
+  TEST_CASE("test true equality operator with singly item-ed list"){
+    gilist list;
+    list.push_back(1);
+    gilist newList;
+    newList.push_back(1);
+
+    CHECK(list==newList);
+  }
+
+  TEST_CASE("test false equality operator with multi item-ed list"){
+
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+    gilist newList;
+    newList.push_back(1);
+    newList.push_back(3);
+
+    CHECK_FALSE(list==newList);
+  }
+
+  TEST_CASE("test true equality operator with multi item-ed list"){
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+    gilist newList;
+    newList.push_back(1);
+    newList.push_back(2);
+
+    CHECK(list==newList);
+  }
+
+  TEST_CASE("test inequality operator with empty list"){
+    gilist list;
+    gilist newList;
+
+    CHECK_FALSE(list!=newList);
+  }
+
+  TEST_CASE("test false inequality operator with singly item-ed list"){
+    gilist list;
+    list.push_back(1);
+    gilist newList;
+    newList.push_back(1);
+
+    CHECK_FALSE(list!=newList);
+  }
+
+  TEST_CASE("test true inequality operator with singly item-ed list"){
+    gilist list;
+    list.push_back(1);
+    gilist newList;
+    newList.push_back(2);
+
+    CHECK(list!=newList);
+  }
+
+  TEST_CASE("test false inequality operator with multi item-ed list"){
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    gilist newList;
+    newList.push_back(1);
+    newList.push_back(2);
+
+    CHECK_FALSE(list!=newList);
+  }
+
+  TEST_CASE("test true inequality operator with multi item-ed list"){
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+    
+    gilist newList;
+    newList.push_back(1);
+    newList.push_back(3);
+
+    CHECK(list!=newList);
+  }
+
+  TEST_CASE("test stream insertion operator with empty stream"){
+
+  }
+
+  TEST_CASE("test stream insertion operator with singly item-ed stream"){
+
+  }
+
+  TEST_CASE("test stream insertion operator with multi item-ed stream"){
+
+  }
+
+  TEST_CASE("test stream extraction operator with empty stream"){
+
+  }
+
+  TEST_CASE("test stream extraction operator with singly item-ed stream"){
+
+  }
+
+  TEST_CASE("test stream extraction operator with multi item-ed stream"){
+
+  }
 }
 
 TEST_SUITE("methods"){
