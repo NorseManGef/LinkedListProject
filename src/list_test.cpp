@@ -246,6 +246,57 @@ TEST_SUITE("Operators!"){
     CHECK_EQ(1, newList.front());
     CHECK_EQ(2, newList.back());
   }
+
+  TEST_CASE("test append operator with empty list"){
+    gint::init();
+
+    gilist list;
+    gilist newList;
+    gilist finalList = list+newList;
+
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, finalList.size());
+  }
+
+  TEST_CASE("test append operator with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    gilist newList;
+    list.push_back(1);
+    newList.push_back(2);
+    gilist finalList = list+newList;
+
+    CHECK_EQ(4, gint::count());
+    CHECK_EQ(2, finalList.size());
+    CHECK_EQ(1, finalList.front());
+    CHECK_EQ(2, finalList.back());
+  }
+
+  TEST_CASE("test append operator with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    gilist newList;
+    list.push_back(1);
+    list.push_back(2);
+    newList.push_back(3);
+    newList.push_back(4);
+
+    gilist finalList = list+newList;
+
+    CHECK_EQ(8, gint::count());
+    CHECK_EQ(4, finalList.size());
+
+    auto it = finalList.begin();
+    CHECK_EQ(1, *it);
+    ++it;
+    CHECK_EQ(2, *it);
+    ++it;
+    CHECK_EQ(3, *it);
+    ++it;
+    CHECK_EQ(4, *it);
+  }
 }
 
 TEST_SUITE("methods"){
