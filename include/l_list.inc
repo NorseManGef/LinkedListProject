@@ -133,16 +133,17 @@ TT void LT::push_back(const T& item){
 
 TT T LT::pop_back(){
   CHECK_NOT_EMPTY();
-  T temp = _tail->data; // the value which will be returned
-  if(_head==_tail){ // this avoids a crash if there is only a single item
+  T temp = _tail->data;
+  if(_head==_tail){
+    delete _tail;
     _tail = nullptr;
-    --_size;
-    return temp;
+  } else {
+    _tail = _tail->previous;
+    delete _tail->next;
+    _tail->next = nullptr;
   }
-  _tail = _tail->previous;
-  _tail->next = nullptr;
   --_size;
-  return temp;
+  return temp; 
 }
 
 TT bool LT::remove(const T& item){
