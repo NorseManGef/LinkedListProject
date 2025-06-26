@@ -446,32 +446,103 @@ TEST_SUITE("Operators!"){
   }
 
   TEST_CASE("test stream insertion operator with empty stream"){
-
+    //TODO
   }
 
   TEST_CASE("test stream insertion operator with singly item-ed stream"){
-
+    //TODO
   }
 
   TEST_CASE("test stream insertion operator with multi item-ed stream"){
-
+    //TODO
   }
 
   TEST_CASE("test stream extraction operator with empty stream"){
-
+    //TODO
   }
 
   TEST_CASE("test stream extraction operator with singly item-ed stream"){
-
+    //TODO
   }
 
   TEST_CASE("test stream extraction operator with multi item-ed stream"){
-
+    //TODO
   }
 }
 
 TEST_SUITE("methods"){
-  //TODO
+  TEST_CASE("test front with empty list"){
+    gilist list;
+    CHECK_THROWS(list.front());
+  }
+
+  TEST_CASE("test front with singly item-ed list"){
+    gilist list;
+    list.push_back(1);
+
+    CHECK_EQ(1, list.front());
+  }
+
+  TEST_CASE("test front with multi item-ed list"){
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    CHECK_EQ(1, list.front());
+  }
+
+  TEST_CASE("test back with empty list"){
+    gilist list;
+    CHECK_THROWS(list.back());
+  }
+
+  TEST_CASE("test back with singly item-ed list"){
+    gilist list;
+    list.push_back(1);
+
+    CHECK_EQ(1, list.back());
+  }
+
+  TEST_CASE("test back with multi item-ed list"){
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    CHECK_EQ(2, list.back());
+  }
+
+  TEST_CASE("test empty with empty list"){
+    gilist list;
+    CHECK(list.empty());
+  }
+
+  TEST_CASE("test empty with non empty list"){
+    gilist list;
+    list.push_back(1);
+
+    CHECK_FALSE(list.empty());
+  }
+
+  TEST_CASE("test size with empty list"){
+    gilist list;
+
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test size with singly item-ed list"){
+    gilist list;
+    list.push_back(1);
+
+    CHECK_EQ(1, list.size());
+  }
+
+  TEST_CASE("test size with multi item-ed list"){
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    CHECK_EQ(2, list.size());
+  }
 }
 
 
