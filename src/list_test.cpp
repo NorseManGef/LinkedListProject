@@ -543,6 +543,17 @@ TEST_SUITE("methods"){
 
     CHECK_EQ(2, list.size());
   }
+
+  TEST_CASE("test push_front"){
+    gint::init();
+
+    gilist list;
+    list.push_front(1);
+
+    CHECK_EQ(1, list.size());
+    CHECK_EQ(1, list.front());
+    CHECK_EQ(1, gint::count());
+  }
 }
 
 
