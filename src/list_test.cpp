@@ -585,6 +585,43 @@ TEST_SUITE("methods"){
     CHECK_EQ(3, list.back());
     CHECK_EQ(3, gint::count());
   }
+
+  TEST_CASE("test pop_front with empty list"){
+    gint::init();
+
+    gilist list;
+
+    CHECK_THROWS(list.pop_front());
+  }
+
+  TEST_CASE("test pop_front with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    auto testItem = list.pop_front();
+
+    CHECK_EQ(1, testItem);
+    CHECK_EQ(0, list.size());
+    CHECK(list.empty());
+    CHECK_EQ(0, gint::count());
+  }
+
+  TEST_CASE("test pop_front with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    auto testItem = list.pop_front();
+
+    CHECK_EQ(1, testItem);
+    CHECK_EQ(1, list.size());
+    CHECK_FALSE(list.empty());
+    CHECK_EQ(1, gint::count());
+  }
 }
 
 
