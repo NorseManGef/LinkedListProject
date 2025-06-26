@@ -105,11 +105,17 @@ TT void LT::push_front(const T& item){
 
 TT T LT::pop_front(){
   CHECK_NOT_EMPTY();
-  Node<T>* temp = _head;
-  _head = _head->next;
-  delete _head->previous;
+  T temp = _head->data;
+  if(_head==_tail){
+    delete _head;
+    _head = nullptr;
+  } else {
+    _head = _head->next;
+    delete _head->previous;
+    _head->previous = nullptr;
+  }
   --_size;
-  return temp->data;
+  return temp; 
 }
 
 TT void LT::push_back(const T& item){
@@ -127,11 +133,16 @@ TT void LT::push_back(const T& item){
 
 TT T LT::pop_back(){
   CHECK_NOT_EMPTY();
-  Node<T>* temp = _tail;
+  T temp = _tail->data; // the value which will be returned
+  if(_head==_tail){ // this avoids a crash if there is only a single item
+    _tail = nullptr;
+    --_size;
+    return temp;
+  }
   _tail = _tail->previous;
   _tail->next = nullptr;
   --_size;
-  return temp->data;
+  return temp;
 }
 
 TT bool LT::remove(const T& item){

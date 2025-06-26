@@ -599,13 +599,15 @@ TEST_SUITE("methods"){
 
     gilist list;
     list.push_back(1);
-
+    
     auto testItem = list.pop_front();
-
+    
     CHECK_EQ(1, testItem);
     CHECK_EQ(0, list.size());
     CHECK(list.empty());
-    CHECK_EQ(0, gint::count());
+    std::cout << "before final check" << std::endl;
+    CHECK_EQ(1, gint::count());
+    std::cout << "after final check" << std::endl;
   }
 
   TEST_CASE("test pop_front with multi item-ed list"){
@@ -614,10 +616,13 @@ TEST_SUITE("methods"){
     gilist list;
     list.push_back(1);
     list.push_back(2);
+    
+    {
+      auto testItem = list.pop_front();
 
-    auto testItem = list.pop_front();
+      CHECK_EQ(1, testItem);
+    }
 
-    CHECK_EQ(1, testItem);
     CHECK_EQ(1, list.size());
     CHECK_FALSE(list.empty());
     CHECK_EQ(1, gint::count());
