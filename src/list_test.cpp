@@ -553,6 +553,37 @@ TEST_SUITE("methods"){
     CHECK_EQ(1, list.size());
     CHECK_EQ(1, list.front());
     CHECK_EQ(1, gint::count());
+
+    list.push_front(2);
+    CHECK_EQ(2, list.size());
+    CHECK_EQ(2, list.front());
+    CHECK_EQ(2, gint::count());
+
+    list.push_front(3);
+    CHECK_EQ(3, list.size());
+    CHECK_EQ(3, list.front());
+    CHECK_EQ(3, gint::count());
+  }
+
+  TEST_CASE("test push_back"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    CHECK_EQ(1, list.size());
+    CHECK_EQ(1, list.back());
+    CHECK_EQ(1, gint::count());
+ 
+    list.push_back(2);
+    CHECK_EQ(2, list.size());
+    CHECK_EQ(2, list.back());
+    CHECK_EQ(2, gint::count());
+
+    list.push_back(3);
+    CHECK_EQ(3, list.size());
+    CHECK_EQ(3, list.back());
+    CHECK_EQ(3, gint::count());
   }
 }
 
