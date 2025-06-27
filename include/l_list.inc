@@ -109,6 +109,7 @@ TT T LT::pop_front(){
   if(_head==_tail){
     delete _head;
     _head = nullptr;
+    _tail = nullptr; //just in any functions use _tail to check for emptiness instead of _head because I never standardized and I really should just use size but I don't.
   } else {
     _head = _head->next;
     delete _head->previous;
