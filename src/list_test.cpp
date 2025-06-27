@@ -2,6 +2,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include<string>
 #include<sstream>
+#include<cstddef>
 #include "../include/doctest/doctest.h"
 #include "../include/gravedata.h"
 #include "../include/l_list.h"
@@ -659,6 +660,41 @@ TEST_SUITE("methods"){
 
     CHECK_EQ(1, list.size());
     CHECK_EQ(1, gint::count());
+  }
+
+  TEST_CASE("test remove with empty list"){
+    gint::count();
+
+    gilist list;
+    
+    CHECK_FALSE(list.remove(1));
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test remove with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    CHECK(list.remove(1));
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test remove with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    CHECK(list.remove(1));
+    CHECK_EQ(2, list.front());
+    CHECK_EQ(2, list.back());
+    CHECK_EQ(1, gint::count());
+    CHECK_EQ(1, list.size());
   }
 }
 
