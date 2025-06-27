@@ -137,6 +137,7 @@ TT T LT::pop_back(){
   if(_head==_tail){
     delete _tail;
     _tail = nullptr;
+    _head = nullptr; // makes sure other functions know the list is empty
   } else {
     _tail = _tail->previous;
     delete _tail->next;
