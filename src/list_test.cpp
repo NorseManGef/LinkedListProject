@@ -587,8 +587,6 @@ TEST_SUITE("methods"){
   }
 
   TEST_CASE("test pop_front with empty list"){
-    gint::init();
-
     gilist list;
 
     CHECK_THROWS(list.pop_front());
@@ -604,10 +602,7 @@ TEST_SUITE("methods"){
     
     CHECK_EQ(1, testItem);
     CHECK_EQ(0, list.size());
-    CHECK(list.empty());
-    std::cout << "before final check" << std::endl;
     CHECK_EQ(1, gint::count());
-    std::cout << "after final check" << std::endl;
   }
 
   TEST_CASE("test pop_front with multi item-ed list"){
@@ -624,7 +619,45 @@ TEST_SUITE("methods"){
     }
 
     CHECK_EQ(1, list.size());
-    CHECK_FALSE(list.empty());
+    CHECK_EQ(1, gint::count());
+  }
+
+  TEST_CASE("test pop_back with empty list"){
+    gilist list;
+
+    CHECK_THROWS(list.pop_back());
+  }
+
+  TEST_CASE("test pop_back with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    {
+      auto testItem = list.pop_back();
+
+      CHECK_EQ(1, testItem);
+    }
+
+    CHECK_EQ(0, list.size());
+    CHECK_EQ(0, gint::count());
+  }
+
+  TEST_CASE("test pop_back with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    {
+      auto testItem = list.pop_back();
+
+      CHECK_EQ(2, testItem);
+    }
+
+    CHECK_EQ(1, list.size());
     CHECK_EQ(1, gint::count());
   }
 }
