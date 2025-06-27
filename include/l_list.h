@@ -228,7 +228,7 @@ class List {
 
 private:
   
-  void remove_node(Node<T>& node);
+  void remove_node(Node<T>* node);
 
   void copy_from(const List<T>& other);
 

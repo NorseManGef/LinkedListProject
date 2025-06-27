@@ -152,7 +152,7 @@ TT bool LT::remove(const T& item){
   if(_head==nullptr){ return false; }
   for(Node<T>* node = _head; node!=nullptr; node = node->next){
     if(node->data==item){
-      remove_node(*node);
+      remove_node(node);
       return true; 
     }
   }
@@ -426,12 +426,13 @@ TT CIT LT::crend() const{
  * Private Functions!
  * */
 
-TT void LT::remove_node(Node<T>& node){
-  if(node.previous != nullptr) node.previous->next = node.next;
-  else _head = node.next;
-  if(node.next != nullptr) node.next->previous = node.previous;
-  else _tail = node.previous;
+TT void LT::remove_node(Node<T>* node){
+  if(node->previous != nullptr) node->previous->next = node->next;
+  else _head = node->next;
+  if(node->next != nullptr) node->next->previous = node->previous;
+  else _tail = node->previous;
   --_size;
+  delete node;
 }
 
 TT void LT::copy_from(const List<T>& other){
