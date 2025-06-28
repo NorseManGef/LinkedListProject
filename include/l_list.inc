@@ -171,39 +171,50 @@ TT bool LT::remove(std::function<bool(T&)> query){
 }
 
 TT bool LT::remove_all(const T& item){
-  if(_head==nullptr){ return false; }
+
+  if(_head==nullptr){ return false; } 
+
   bool track = false;
 
   for(Node<T>* node = _head; node!=nullptr;){
     if(node->data==item){
+
       if(node->next==nullptr){
         remove_node(node);
         return true;
       }
+
       node = node->next;
       remove_node(node->previous);
       track = true;
       continue;
     }
+
     node = node->next;
   }
   return track;
 }
 
 TT bool LT::remove_all(std::function<bool(T&)> query){
+
   if(_head==nullptr){ return false; }
+
   bool track = false;
+
   for(Node<T>* node = _head; node!=nullptr;){
     if(query(node->data)){
+
       if(node->next==nullptr){
         remove_node(node);
         return true;
       }
+
       node = node->next;
       remove_node(node->previous);
       track = true;
       continue;
     }
+
     node = node->next;
   }
   return track;
