@@ -744,6 +744,92 @@ TEST_SUITE("methods"){
     CHECK_EQ(2, list.front());
     CHECK_EQ(2, list.back());
   }
+
+  TEST_CASE("test remove_all with empty list"){
+    gint::init();
+
+    gilist list;
+
+    CHECK_FALSE(list.remove_all(1));
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test remove_all with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    CHECK(list.remove_all(1));
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test remove_all with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(2);
+    list.push_back(2);
+    list.push_back(1);
+    list.push_back(1);
+
+    CHECK(list.remove_all(1));
+    CHECK_EQ(2, gint::count());
+    CHECK_EQ(2, list.size());
+    CHECK_EQ(2, list.front());
+    CHECK_EQ(2, list.back());
+  }
+
+  TEST_CASE("test remove_all query with empty list"){
+    gint::init();
+
+    gilist list;
+
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+  
+    CHECK_FALSE(list.remove_all(testFunction(1)));
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test remove_all query with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+
+    CHECK(list.remove_all(testFunction(1)));
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test remove_all query with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(2);
+    list.push_back(2);
+    list.push_back(1);
+    list.push_back(1);
+
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+
+    CHECK(list.remove_all(testFunction(1)));
+    CHECK_EQ(2, gint::count());
+    CHECK_EQ(2, list.size());
+    CHECK_EQ(2, list.front());
+    CHECK_EQ(2, list.back());
+  }
 }
 
 

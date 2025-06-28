@@ -173,10 +173,15 @@ TT bool LT::remove(std::function<bool(T&)> query){
 TT bool LT::remove_all(const T& item){
   if(_head==nullptr){ return false; }
   bool track = false;
-  for(Node<T>* node = _head; node!=nullptr; node = node->next){
+
+  for(Node<T>* node = _head; node!=nullptr;){
     if(node->data==item){
+      if(node->next==nullptr){
+        remove_node(node);
+        return true;
+      }
       node = node->next;
-      remove_node(*(node->previous));
+      remove_node(node->previous);
       track = true;
       continue;
     }
@@ -188,8 +193,12 @@ TT bool LT::remove_all(const T& item){
 TT bool LT::remove_all(std::function<bool(T&)> query){
   if(_head==nullptr){ return false; }
   bool track = false;
-  for(Node<T>* node = _head; node!=nullptr; node = node->next){
+  for(Node<T>* node = _head; node!=nullptr;){
     if(query(node->data)){
+      if(node->next==nullptr){
+        remove_node(node);
+        return true;
+      }
       node = node->next;
       remove_node(node->previous);
       track = true;
@@ -197,6 +206,7 @@ TT bool LT::remove_all(std::function<bool(T&)> query){
     }
     node = node->next;
   }
+  return track;
 }
 
 TT void LT::clear(){
