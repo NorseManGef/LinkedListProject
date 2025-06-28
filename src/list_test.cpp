@@ -687,14 +687,62 @@ TEST_SUITE("methods"){
     gint::init();
 
     gilist list;
-    list.push_back(1);
     list.push_back(2);
+    list.push_back(1);
 
     CHECK(list.remove(1));
     CHECK_EQ(2, list.front());
     CHECK_EQ(2, list.back());
     CHECK_EQ(1, gint::count());
     CHECK_EQ(1, list.size());
+  }
+
+  TEST_CASE("test remove query with empty list"){
+    gint::init();
+
+    gilist list;
+    
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+
+    bool temp = list.remove(testFunction(1));
+    CHECK_FALSE(temp);
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test remove query with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+
+    bool temp = list.remove(testFunction(1));
+    CHECK(temp);
+    CHECK_EQ(0, gint::count());
+    CHECK_EQ(0, list.size());
+  }
+
+  TEST_CASE("test remove query with multi item-ed list"){
+    gilist list;
+    list.push_back(2);
+    list.push_back(1);
+
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+
+    bool temp = list.remove(testFunction(1));
+    CHECK(temp);
+    CHECK_EQ(1, gint::count());
+    CHECK_EQ(1, list.size());
+    CHECK_EQ(2, list.front());
+    CHECK_EQ(2, list.back());
   }
 }
 
