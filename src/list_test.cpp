@@ -462,7 +462,9 @@ TEST_SUITE("Operators!") {
 		CHECK_EQ(datstr, lstring);
 	}
 
-	TEST_CASE("test stream extraction operator") {}
+	TEST_CASE("test stream extraction operator") {
+		// TODO
+	}
 }
 
 TEST_SUITE("methods") {
@@ -812,4 +814,117 @@ TEST_SUITE("methods") {
 		CHECK_EQ(2, list.front());
 		CHECK_EQ(2, list.back());
 	}
+
+  TEST_CASE("test clear with empty list"){
+    gint::init();
+
+    gilist list;
+
+    list.clear();
+
+    CHECK(list.empty());
+    CHECK_EQ(0, gint::count());
+  }
+
+  TEST_CASE("test clear with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    list.clear();
+
+    CHECK(list.empty());
+    CHECK_EQ(0, gint::count());
+  }
+
+  TEST_CASE("test clear with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    list.clear();
+
+    CHECK(list.empty());
+    CHECK_EQ(0, gint::count());
+  }
+
+  TEST_CASE("test contains with empty list"){
+    gint::init();
+
+    gilist list;
+    
+    CHECK_FALSE(list.contains(1));
+    CHECK_EQ(0, gint::count());
+  }
+
+  TEST_CASE("test contains with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+
+    CHECK(list.contains(1));
+    CHECK_FALSE(list.contains(2));
+    CHECK_EQ(1, gint::count());
+  }
+
+  TEST_CASE("test contains with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    list.push_back(1);
+    list.push_back(2);
+
+    CHECK(list.contains(1));
+    CHECK(list.contains(2));
+    CHECK_FALSE(list.contains(3));
+    CHECK_EQ(2, gint::count());
+  }
+
+  TEST_CASE("test contains query with empty list"){
+    gint::init();
+
+    gilist list;
+    
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+
+    CHECK_FALSE(list.contains(testFunction));
+    CHECK_EQ(0, gint::count());
+  }
+
+  TEST_CASE("test contains query with singly item-ed list"){
+    gint::init();
+
+    gilist list;
+    
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+
+    list.push_back(1);
+
+    CHECK(list.contains(testFunction));
+    CHECK_EQ(1, gint::count());
+  }
+
+  TEST_CASE("test contains query with multi item-ed list"){
+    gint::init();
+
+    gilist list;
+    
+    auto testFunction = [&](gint value) -> bool {
+      return value==1;
+    };
+
+    list.push_back(1);
+    list.push_back(2);
+
+    CHECK(list.contains(1));
+    CHECK_EQ(2, gint::count());
+  }
 }
