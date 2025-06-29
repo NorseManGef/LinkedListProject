@@ -956,4 +956,48 @@ TEST_SUITE("methods") {
 		CHECK_EQ(0, list.count(3));
 		CHECK_EQ(4, gint::count());
 	}
+
+    TEST_CASE("test count query with empty list"){
+        gint::init();
+
+        auto testFunction = [&](gint value) -> bool {
+            return value==1;
+        };
+
+        gilist list;
+
+        CHECK_EQ(0, list.count(testFunction));
+        CHECK_EQ(0, gint::count());
+    }
+
+    TEST_CASE("test count query with singly item-ed list"){
+        gint::init();
+
+        auto testFunction = [&](gint value) -> bool {
+            return value==1;
+        };
+
+        gilist list;
+        list.push_back(1);
+
+        CHECK_EQ(1, list.count(testFunction));
+        CHECK_EQ(1, gint::count());
+    }
+
+    TEST_CASE("test count query with multi item-ed list"){
+        gint::init();
+
+        auto testFunction = [&](gint value) -> bool {
+            return value==1;
+        };
+
+        gilist list;
+        list.push_back(1);
+        list.push_back(1);
+        list.push_back(2);
+        list.push_back(2);
+
+        CHECK_EQ(2, list.count(testFunction));
+        CHECK_EQ(4, gint::count());
+    }
 }
