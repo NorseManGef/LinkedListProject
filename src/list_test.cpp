@@ -815,116 +815,145 @@ TEST_SUITE("methods") {
 		CHECK_EQ(2, list.back());
 	}
 
-  TEST_CASE("test clear with empty list"){
-    gint::init();
+	TEST_CASE("test clear with empty list") {
+		gint::init();
 
-    gilist list;
+		gilist list;
 
-    list.clear();
+		list.clear();
 
-    CHECK(list.empty());
-    CHECK_EQ(0, gint::count());
-  }
+		CHECK(list.empty());
+		CHECK_EQ(0, gint::count());
+	}
 
-  TEST_CASE("test clear with singly item-ed list"){
-    gint::init();
+	TEST_CASE("test clear with singly item-ed list") {
+		gint::init();
 
-    gilist list;
-    list.push_back(1);
+		gilist list;
+		list.push_back(1);
 
-    list.clear();
+		list.clear();
 
-    CHECK(list.empty());
-    CHECK_EQ(0, gint::count());
-  }
+		CHECK(list.empty());
+		CHECK_EQ(0, gint::count());
+	}
 
-  TEST_CASE("test clear with multi item-ed list"){
-    gint::init();
+	TEST_CASE("test clear with multi item-ed list") {
+		gint::init();
 
-    gilist list;
-    list.push_back(1);
-    list.push_back(2);
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
 
-    list.clear();
+		list.clear();
 
-    CHECK(list.empty());
-    CHECK_EQ(0, gint::count());
-  }
+		CHECK(list.empty());
+		CHECK_EQ(0, gint::count());
+	}
 
-  TEST_CASE("test contains with empty list"){
-    gint::init();
+	TEST_CASE("test contains with empty list") {
+		gint::init();
 
-    gilist list;
-    
-    CHECK_FALSE(list.contains(1));
-    CHECK_EQ(0, gint::count());
-  }
+		gilist list;
 
-  TEST_CASE("test contains with singly item-ed list"){
-    gint::init();
+		CHECK_FALSE(list.contains(1));
+		CHECK_EQ(0, gint::count());
+	}
 
-    gilist list;
-    list.push_back(1);
+	TEST_CASE("test contains with singly item-ed list") {
+		gint::init();
 
-    CHECK(list.contains(1));
-    CHECK_FALSE(list.contains(2));
-    CHECK_EQ(1, gint::count());
-  }
+		gilist list;
+		list.push_back(1);
 
-  TEST_CASE("test contains with multi item-ed list"){
-    gint::init();
+		CHECK(list.contains(1));
+		CHECK_FALSE(list.contains(2));
+		CHECK_EQ(1, gint::count());
+	}
 
-    gilist list;
-    list.push_back(1);
-    list.push_back(2);
+	TEST_CASE("test contains with multi item-ed list") {
+		gint::init();
 
-    CHECK(list.contains(1));
-    CHECK(list.contains(2));
-    CHECK_FALSE(list.contains(3));
-    CHECK_EQ(2, gint::count());
-  }
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
 
-  TEST_CASE("test contains query with empty list"){
-    gint::init();
+		CHECK(list.contains(1));
+		CHECK(list.contains(2));
+		CHECK_FALSE(list.contains(3));
+		CHECK_EQ(2, gint::count());
+	}
 
-    gilist list;
-    
-    auto testFunction = [&](gint value) -> bool {
-      return value==1;
-    };
+	TEST_CASE("test contains query with empty list") {
+		gint::init();
 
-    CHECK_FALSE(list.contains(testFunction));
-    CHECK_EQ(0, gint::count());
-  }
+		gilist list;
 
-  TEST_CASE("test contains query with singly item-ed list"){
-    gint::init();
+		auto testFunction = [&](gint value) -> bool { return value == 1; };
 
-    gilist list;
-    
-    auto testFunction = [&](gint value) -> bool {
-      return value==1;
-    };
+		CHECK_FALSE(list.contains(testFunction));
+		CHECK_EQ(0, gint::count());
+	}
 
-    list.push_back(1);
+	TEST_CASE("test contains query with singly item-ed list") {
+		gint::init();
 
-    CHECK(list.contains(testFunction));
-    CHECK_EQ(1, gint::count());
-  }
+		gilist list;
 
-  TEST_CASE("test contains query with multi item-ed list"){
-    gint::init();
+		auto testFunction = [&](gint value) -> bool { return value == 1; };
 
-    gilist list;
-    
-    auto testFunction = [&](gint value) -> bool {
-      return value==1;
-    };
+		list.push_back(1);
 
-    list.push_back(1);
-    list.push_back(2);
+		CHECK(list.contains(testFunction));
+		CHECK_EQ(1, gint::count());
+	}
 
-    CHECK(list.contains(1));
-    CHECK_EQ(2, gint::count());
-  }
+	TEST_CASE("test contains query with multi item-ed list") {
+		gint::init();
+
+		gilist list;
+
+		auto testFunction = [&](gint value) -> bool { return value == 1; };
+
+		list.push_back(1);
+		list.push_back(2);
+
+		CHECK(list.contains(1));
+		CHECK_EQ(2, gint::count());
+	}
+
+	TEST_CASE("test count with empty list") {
+		gint::init();
+
+		gilist list;
+
+		CHECK_EQ(0, list.count(1));
+		CHECK_EQ(0, gint::count());
+	}
+
+	TEST_CASE("test count with singly item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+
+		CHECK_EQ(1, list.count(1));
+		CHECK_EQ(0, list.count(2));
+		CHECK_EQ(1, gint::count());
+	}
+
+	TEST_CASE("test count with multi item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(1);
+		list.push_back(2);
+		list.push_back(2);
+
+		CHECK_EQ(2, list.count(1));
+		CHECK_EQ(2, list.count(2));
+		CHECK_EQ(0, list.count(3));
+		CHECK_EQ(4, gint::count());
+	}
 }
