@@ -1,8 +1,8 @@
 #include <stdexcept>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "../include/doctest/doctest.h"
-#include "../include/gravedata.h"
-#include "../include/l_list.h"
+#include "doctest/doctest.h"
+#include "gravedata.h"
+#include "l_list.h"
 #include <cstddef>
 #include <iostream>
 #include <sstream>
