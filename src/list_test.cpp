@@ -7,6 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 using gint = ian::GraveData;
 using gilist = List<gint>;
@@ -460,10 +461,34 @@ TEST_SUITE("Operators!") {
 		std::string lstring = stream.str();
 
 		CHECK_EQ(datstr, lstring);
+		CHECK_EQ(5, gint::count());
 	}
 
 	TEST_CASE("test stream extraction operator") {
-		// TODO
+		gint::init();
+
+		int data[] = {1, 2, 3, 4, 5};
+		std::stringstream stream;
+
+		for (int x : data) {
+			stream << x << " ";
+		}
+
+		gilist list;
+
+		stream.seekg(0);
+
+		stream >> list;
+
+		CHECK_EQ(5, list.size());
+		CHECK_EQ(5, gint::count());
+
+		auto it = list.begin();
+		int i = 0;
+
+		while (it != list.end()) {
+			CHECK_EQ(data[i++], *(it++));
+		}
 	}
 }
 
@@ -581,6 +606,167 @@ TEST_SUITE("methods") {
 		CHECK_EQ(3, list.size());
 		CHECK_EQ(3, list.back());
 		CHECK_EQ(3, gint::count());
+	}
+
+	TEST_CASE("test append with empty collection") {
+		gint::init();
+
+		gilist list;
+		std::vector<int> vec;
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(0, list.size());
+	}
+
+	TEST_CASE("test append with singly item-ed collection") {
+		gint::init();
+
+		gilist list;
+		std::vector<int> vec = {1};
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(1, gint::count());
+		CHECK_EQ(1, list.size());
+		CHECK_EQ(1, list.front());
+		CHECK_EQ(1, list.back());
+	}
+
+	TEST_CASE("test append with multi item-ed collection") {
+		gint::init();
+
+		gilist list;
+		std::vector<int> vec = {1, 2};
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(2, gint::count());
+		CHECK_EQ(2, list.size());
+		CHECK_EQ(1, list.front());
+		CHECK_EQ(2, list.back());
+	}
+
+	TEST_CASE("test append with empty collection and singly item-ed list") {
+		gint::init();
+
+		gilist list;
+		std::vector<int> vec;
+
+		list.push_back(1);
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(1, gint::count());
+		CHECK_EQ(1, list.size());
+	}
+
+	TEST_CASE(
+		"test append with singly item-ed collection and singly item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+
+		std::vector<int> vec = {2};
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(2, gint::count());
+		CHECK_EQ(2, list.size());
+		CHECK_EQ(1, list.front());
+		CHECK_EQ(2, list.back());
+	}
+
+	TEST_CASE(
+		"test append with multi item-ed collection and singly item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+
+		std::vector<int> vec = {2, 3};
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(3, gint::count());
+		CHECK_EQ(3, list.size());
+
+		auto it = list.begin();
+
+		CHECK_EQ(1, *it);
+		++it;
+		CHECK_EQ(2, *it);
+		++it;
+		CHECK_EQ(3, *it);
+	}
+
+	TEST_CASE("test append with empty collection and multi item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
+
+		std::vector<int> vec;
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(2, gint::count());
+		CHECK_EQ(2, list.size());
+		CHECK_EQ(1, list.front());
+		CHECK_EQ(2, list.back());
+	}
+
+	TEST_CASE(
+		"test append with singly item-ed collection and multi item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
+
+		std::vector<int> vec = {3};
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(3, gint::count());
+		CHECK_EQ(3, list.size());
+
+		auto it = list.begin();
+
+		CHECK_EQ(1, *it);
+		++it;
+		CHECK_EQ(2, *it);
+		++it;
+		CHECK_EQ(3, *it);
+	}
+
+	TEST_CASE(
+		"test append with multi item-ed collection and multi item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
+
+		std::vector<int> vec = {3, 4};
+
+		list.append(vec.begin(), vec.end());
+
+		CHECK_EQ(4, gint::count());
+		CHECK_EQ(4, list.size());
+
+		auto it = list.begin();
+
+		CHECK_EQ(1, *it);
+		++it;
+		CHECK_EQ(2, *it);
+		++it;
+		CHECK_EQ(3, *it);
+		++it;
+		CHECK_EQ(4, *it);
 	}
 
 	TEST_CASE("test pop_front with empty list") {
@@ -733,6 +919,91 @@ TEST_SUITE("methods") {
 		CHECK_EQ(1, list.size());
 		CHECK_EQ(2, list.front());
 		CHECK_EQ(2, list.back());
+	}
+
+	TEST_CASE("test remove iter with empty list and invalid iterator") {
+		gint::init();
+
+		gilist list;
+
+		auto it = list.begin();
+
+		CHECK_FALSE(list.remove(it));
+
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(0, list.size());
+	}
+
+	TEST_CASE("test remove iter with singly item-ed list and valid iterator") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+
+		auto it = list.begin();
+
+		CHECK(list.remove(it));
+
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(0, list.size());
+	}
+
+	TEST_CASE(
+		"test remove iter with singly item-ed list and invalid iterator") {
+		gint::init();
+
+		gilist list;
+
+		auto it = list.begin();
+
+		list.push_back(1);
+
+		CHECK_FALSE(list.remove(it));
+
+		CHECK_EQ(1, gint::count());
+		CHECK_EQ(1, list.size());
+	}
+
+	TEST_CASE("test remove iter with multi item-ed list and valid iterator") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
+
+		auto it = list.begin();
+
+		CHECK(list.remove(it));
+
+		CHECK_EQ(1, gint::count());
+		CHECK_EQ(1, list.size());
+		CHECK_EQ(2, list.front());
+
+		list.push_front(1);
+
+		++it;
+
+		CHECK(list.remove(it));
+
+		CHECK_EQ(1, gint::count());
+		CHECK_EQ(1, list.size());
+		CHECK_EQ(1, list.front());
+	}
+
+	TEST_CASE("test remove iter with multi item-ed list and invalid list") {
+		gint::init();
+
+		gilist list;
+
+		auto it = list.begin();
+
+		list.push_back(1);
+		list.push_back(2);
+
+		CHECK_FALSE(list.remove(it));
+
+		CHECK_EQ(2, gint::count());
+		CHECK_EQ(2, list.size());
 	}
 
 	TEST_CASE("test remove_all with empty list") {
@@ -957,47 +1228,338 @@ TEST_SUITE("methods") {
 		CHECK_EQ(4, gint::count());
 	}
 
-    TEST_CASE("test count query with empty list"){
+	TEST_CASE("test count query with empty list") {
+		gint::init();
+
+		auto testFunction = [&](gint value) -> bool { return value == 1; };
+
+		gilist list;
+
+		CHECK_EQ(0, list.count(testFunction));
+		CHECK_EQ(0, gint::count());
+	}
+
+	TEST_CASE("test count query with singly item-ed list") {
+		gint::init();
+
+		auto testFunction = [&](gint value) -> bool { return value == 1; };
+
+		gilist list;
+		list.push_back(1);
+
+		CHECK_EQ(1, list.count(testFunction));
+		CHECK_EQ(1, gint::count());
+	}
+
+	TEST_CASE("test count query with multi item-ed list") {
+		gint::init();
+
+		auto testFunction = [&](gint value) -> bool { return value == 1; };
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(1);
+		list.push_back(2);
+		list.push_back(2);
+
+		CHECK_EQ(2, list.count(testFunction));
+		CHECK_EQ(4, gint::count());
+	}
+
+	TEST_CASE("test foreach") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
+		list.push_back(3);
+
+		int testValue = 0;
+
+		auto testFunction = [&](gint value) {
+			testValue++;
+			CHECK_EQ(testValue, value);
+		};
+
+		list.foreach (testFunction);
+
+		CHECK_EQ(3, gint::count());
+	}
+
+	TEST_CASE("test empty map") {
+		gint::init();
+
+		List<std::string> list;
+
+		auto testFunction = [](std::string str) { return std::stoi(str); };
+
+		gilist newList = list.map<gint>(testFunction);
+
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(0, list.size());
+		CHECK_EQ(0, newList.size());
+	}
+
+	TEST_CASE("test empty map with same type") {
+		gint::init();
+
+		gilist list;
+
+		auto testFunction = [](gint value) { return value * 2; };
+
+		gilist newList = list.map<gint>(testFunction);
+
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(0, list.size());
+		CHECK_EQ(0, newList.size());
+	}
+
+	TEST_CASE("test singly item-ed map with different type") {
+		gint::init();
+
+		List<std::string> list;
+		list.push_back("1");
+
+		auto testFunction = [](std::string str) { return std::stoi(str); };
+
+		gilist newList = list.map<gint>(testFunction);
+
+		CHECK_EQ(1, gint::count());
+		CHECK_EQ(1, newList.size());
+		CHECK_EQ(1, list.size());
+		CHECK_EQ(1, newList.front());
+	}
+
+	TEST_CASE("test singly item-ed map with same type") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+
+		auto testFunction = [](gint value) { return value * 2; };
+
+		gilist newList = list.map<gint>(testFunction);
+
+		CHECK_EQ(2, gint::count());
+		CHECK_EQ(1, list.size());
+		CHECK_EQ(1, newList.size());
+		CHECK_EQ(1, list.front());
+		CHECK_EQ(2, newList.front());
+		CHECK_EQ(2, newList.back());
+	}
+
+	TEST_CASE("test multi item-ed map with different type") {
+		gint::init();
+
+		List<std::string> list;
+		list.push_back("1");
+		list.push_back("2");
+
+		auto testFunction = [](std::string str) { return std::stoi(str); };
+
+		gilist newList = list.map<gint>(testFunction);
+
+		CHECK_EQ(2, gint::count());
+		CHECK_EQ(2, newList.size());
+		CHECK_EQ(1, newList.front());
+		CHECK_EQ(2, newList.back());
+	}
+
+	TEST_CASE("test multi item-ed map with same type") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
+
+		auto testFunction = [](gint value) { return value * 2; };
+
+		gilist newList = list.map<gint>(testFunction);
+
+		CHECK_EQ(4, gint::count());
+		CHECK_EQ(2, newList.size());
+		CHECK_EQ(2, newList.front());
+		CHECK_EQ(4, newList.back());
+	}
+
+	TEST_CASE("test aggregate 1 with empty list") {
+		gint::init();
+
+		gilist list;
+
+		auto testFunction = [](gint result, gint data) {
+			return result + data;
+		};
+
+		CHECK_THROWS(list.aggregate(testFunction));
+	}
+
+	TEST_CASE("test aggregate 1 with singly item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+
+		auto testFunction = [](gint result, gint data) {
+			return result + data;
+		};
+
+		gint result = list.aggregate(testFunction);
+
+		CHECK_EQ(1, result);
+		CHECK_EQ(2, gint::count());
+		CHECK_EQ(1, list.size());
+	}
+
+	TEST_CASE("test aggregate 1 with mutli item-ed list") {
+		gint::init();
+
+		gilist list;
+		list.push_back(1);
+		list.push_back(2);
+
+		auto testFunction = [](gint result, gint data) {
+			return result + data;
+		};
+
+		gint result = list.aggregate(testFunction);
+
+		CHECK_EQ(3, result);
+		CHECK_EQ(3, gint::count());
+		CHECK_EQ(2, list.size());
+	}
+
+	TEST_CASE("test aggregate 2 with empty list") {
+		gint::init();
+
+		List<std::string> list;
+
+		auto testFunction = [](int result, std::string value) {
+			return result + std::stoi(value);
+		};
+
+		CHECK_THROWS(list.aggregate<int>(0, testFunction));
+	}
+
+	TEST_CASE("test aggregate 2 with singly item-ed list") {
+		gint::init();
+
+		List<std::string> list;
+		list.push_back("1");
+
+		auto testFunction = [](int result, std::string value) {
+			return result + std::stoi(value);
+		};
+
+		int result = list.aggregate<int>(0, testFunction);
+
+		CHECK_EQ(result, 1);
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(1, list.size());
+	}
+
+	TEST_CASE("test aggregate 2 with multi item-ed list") {
+		gint::init();
+
+		List<std::string> list;
+		list.push_back("1");
+		list.push_back("2");
+
+		auto testFunction = [](int result, std::string value) {
+			return result + std::stoi(value);
+		};
+
+		int result = list.aggregate<int>(0, testFunction);
+
+		CHECK_EQ(3, result);
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(2, list.size());
+	}
+
+	TEST_CASE("test aggregate 3 with empty list") {
+		gint::init();
+
+		List<std::string> list;
+
+		auto startFunction = [](std::string value) { return std::stoi(value); };
+		auto testFunction = [](int result, std::string value) {
+			return result + std::stoi(value);
+		};
+
+		CHECK_THROWS(list.aggregate<int>(startFunction, testFunction));
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(0, list.size());
+	}
+
+	TEST_CASE("test aggregate 3 with singly item-ed list") {
+		gint::init();
+
+		List<std::string> list;
+		list.push_back("1");
+
+		auto startFunction = [](std::string value) { return std::stoi(value); };
+		auto testFunction = [](int result, std::string value) {
+			return result + std::stoi(value);
+		};
+
+		int result = list.aggregate<int>(startFunction, testFunction);
+
+		CHECK_EQ(1, result);
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(1, list.size());
+	}
+
+	TEST_CASE("test aggregate 3 with multi item-ed list") {
+		gint::init();
+
+		List<std::string> list;
+		list.push_back("1");
+		list.push_back("2");
+
+		auto startFunction = [](std::string value) { return std::stoi(value); };
+		auto testFunction = [](int result, std::string value) {
+			return result + std::stoi(value);
+		};
+
+		int result = list.aggregate<int>(startFunction, testFunction);
+
+		CHECK_EQ(3, result);
+		CHECK_EQ(0, gint::count());
+		CHECK_EQ(2, list.size());
+	}
+}
+
+TEST_SUITE("iterators!") {
+    TEST_CASE("test forward iteration"){
         gint::init();
 
-        auto testFunction = [&](gint value) -> bool {
-            return value==1;
-        };
+        int data[] = {0, 1, 2, 3, 4, 5 };
+        gilist list(data, data+6);
 
-        gilist list;
+        int* current = data;
+        for(auto item : list){
+            CHECK_EQ(*(current++), item);
+        }
 
-        CHECK_EQ(0, list.count(testFunction));
-        CHECK_EQ(0, gint::count());
+        CHECK_EQ(data+6, current);
+
+        CHECK_EQ(6, gint::count());
+        CHECK_EQ(6, list.size());
     }
 
-    TEST_CASE("test count query with singly item-ed list"){
+    TEST_CASE("test reverse iteratrion"){
         gint::init();
 
-        auto testFunction = [&](gint value) -> bool {
-            return value==1;
-        };
+        int data[] = {0, 1, 2, 3, 4, 5 };
+        gilist list(data, data+6);
 
-        gilist list;
-        list.push_back(1);
+        int* current = data+5;
+        for(auto it = list.rbegin(); it!=list.rend(); ++it){
+            CHECK_EQ(*(current--), *it);
+        }
 
-        CHECK_EQ(1, list.count(testFunction));
-        CHECK_EQ(1, gint::count());
-    }
-
-    TEST_CASE("test count query with multi item-ed list"){
-        gint::init();
-
-        auto testFunction = [&](gint value) -> bool {
-            return value==1;
-        };
-
-        gilist list;
-        list.push_back(1);
-        list.push_back(1);
-        list.push_back(2);
-        list.push_back(2);
-
-        CHECK_EQ(2, list.count(testFunction));
-        CHECK_EQ(4, gint::count());
+        CHECK_EQ(data-1, current);
+        CHECK_EQ(6, gint::count());
+        CHECK_EQ(6, list.size());
     }
 }

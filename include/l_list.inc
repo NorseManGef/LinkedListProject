@@ -117,6 +117,12 @@ TT void LT::push_back(const T &item) {
 	++_size;
 }
 
+TT template<typename ForwardIterator> void LT::append(ForwardIterator begin, ForwardIterator end) {
+    for(auto it = begin; it!=end; ++it){
+        push_back(*it);
+    }
+}
+
 TT T LT::pop_back() {
 	CHECK_NOT_EMPTY();
 	T temp = _tail->data;
@@ -157,6 +163,14 @@ TT bool LT::remove(std::function<bool(T &)> query) {
 		}
 	}
 	return false;
+}
+
+TT bool LT::remove(ListIterator<T, int> it) {
+    if(!it){ return false; }
+    
+    remove_node(it.node);    
+
+    return true;
 }
 
 TT bool LT::remove_all(const T &item) {
@@ -408,7 +422,7 @@ TT std::istream &operator>>(std::istream &in, LT &theList) {
 	std::getline(in, theString);
 
 	std::stringstream str(theString);
-	theList.push_back(std::istream_iterator<T>(str),
+	theList.append(std::istream_iterator<T>(str),
 					  std::istream_iterator<T>());
 	return in;
 }
@@ -419,19 +433,19 @@ TT std::istream &operator>>(std::istream &in, LT &theList) {
 
 TT IT LT::begin() { return IT(_head, false); }
 
-TT IT LT::end() { return IT(_tail, false); }
+TT IT LT::end() { return IT(nullptr, false); }
 
 TT CIT LT::cbegin() const { return CIT(_head, false); }
 
-TT CIT LT::cend() const { return CIT(_tail, false); }
+TT CIT LT::cend() const { return CIT(nullptr, false); }
 
-TT IT LT::rbegin() { return IT(_head, true); }
+TT IT LT::rbegin() { return IT(_tail, true); }
 
-TT IT LT::rend() { return IT(_tail, true); }
+TT IT LT::rend() { return IT(nullptr, true); }
 
-TT CIT LT::crbegin() const { return CIT(_head, true); }
+TT CIT LT::crbegin() const { return CIT(_tail, true); }
 
-TT CIT LT::crend() const { return CIT(_tail, true); }
+TT CIT LT::crend() const { return CIT(nullptr, true); }
 
 /*
  * Private Functions!

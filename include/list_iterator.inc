@@ -59,7 +59,7 @@ TTSRP typename ITB::reference ITB::operator*() {
 }
 
 TTSRP typename ITB::pointer ITB::operator->() {
-	return node->data; // This might be wrong.
+	return &(node->data); // This might be wrong.
 }
 
 TTSRP typename ITB::self &ITB::operator=(const self &other) {
@@ -78,6 +78,8 @@ TTSRP bool ITB::operator!=(const self &other) const {
 	return node != other.node || isReverse != other.isReverse;
 }
 
+TTSRP ITB::operator bool() const { return node != nullptr; }
+
 ITBT::ListIteratorBase(Node<T> *node, bool isReverse)
 	: node(node), isReverse(isReverse) {}
 
@@ -86,7 +88,7 @@ ITBT::ListIteratorBase(const self &other)
 
 ITVT::ListIterator(Node<T> *node, bool isReverse) : ITP(node, isReverse) {}
 
-ITVT::ListIterator(const ITV &other) : ITP(other.node, other.isReverse) {}
+ITVT::ListIterator(const ITV &other) : ITP(other) {}
 
 ITCT::ConstListIterator(Node<T> *node, bool isReverse) : ITP(node, isReverse) {}
 

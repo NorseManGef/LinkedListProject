@@ -99,6 +99,12 @@ template <typename T> class List {
 	/// @brief adds a new item to the end of the list
 	void push_back(const T &item);
 
+    /// @brief appends all items in a collection to the list
+    /// @param begin iterator to the beginning of the collection
+    /// @param end iterator to the end of the collection
+    template<class ForwardIterator>
+    void append(ForwardIterator begin, ForwardIterator end);
+
 	/// @brief removes the last item in the list, and returns it
 	/// @return T
 	/// @throws std::out_of_range if the list is empty
@@ -113,6 +119,11 @@ template <typename T> class List {
 	/// @return bool if the parameter was found and removed
 	/// @param a function that returns true if an element should be removed
 	bool remove(std::function<bool(T &)> query);
+
+    /// @brief attempts to remove the item that the iterator points to
+    /// @return bool false if the iterator is invalid, else true
+    /// @param it an iterator to an item in this list
+    bool remove(ListIterator<T, int> it);
 
 	/// @brief attempts to remove every instance of the parameter
 	/// @return bool if the parameter was found and removed

@@ -13,6 +13,9 @@ template <typename T> class List;
 template <typename T, typename sizeT, typename refT, typename ptrT>
 class ListIteratorBase {
   public:
+    
+    friend class List<T>;
+
 	using iterator_category = std::bidirectional_iterator_tag;
 	using difference_type = size_t;
 	using size_type = sizeT;
@@ -37,6 +40,8 @@ class ListIteratorBase {
 	bool operator==(const self &other) const;
 	bool operator!=(const self &other) const;
 
+    operator bool() const;
+
   protected:
 	ListIteratorBase(Node<T> *node, bool isReverse);
 	ListIteratorBase(const self &other);
@@ -57,10 +62,11 @@ class ListIterator : public ListIteratorBase<T, sizeT, T &, T *> {
 	using reference = ITB::reference;
 
 	friend class List<T>;
+    
+	ListIterator(const ListIterator<T, sizeT> &other);
 
   private:
 	ListIterator(Node<T> *node, bool isReverse);
-	ListIterator(const ListIterator<T, sizeT> &other);
 };
 
 template <typename T, typename sizeT>
@@ -76,9 +82,9 @@ class ConstListIterator
 
 	friend class List<T>;
 
+	ConstListIterator(const ConstListIterator<T, sizeT> &other);
   private:
 	ConstListIterator(Node<T> *node, bool isReverse);
-	ConstListIterator(const ConstListIterator<T, sizeT> &other);
 };
 
 #undef ITB
